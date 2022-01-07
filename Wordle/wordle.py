@@ -1,10 +1,17 @@
 from colorama import init, Fore, Style
 import random
 
+
+# formatting macros for command line output
+right_letter = Fore.GREEN + Style.NORMAL
+wrong_place = Fore.YELLOW + Style.NORMAL
+wrong_letter = Fore.BLACK + Style.BRIGHT
+
 def print_list(my_list):
     for row in my_list:
         print(row[0] + row[1] + row[2] + row[3] + row[4])
 
+# Prompts the user to reset the game, returns True if yes and False otherwise
 def reset_game():
     result = None
     do_reset = input("Would you like to play again? (y/n) ")
@@ -20,12 +27,13 @@ def reset_game():
             do_reset = input("Invalid response. Would you like to play again? (y/n) ")
     return result
 
+# Returns a random word from the provided word list
 def get_random_word(infile):
     random_word = random.choice(open(infile).read().split('\n'))
     random_word = random_word.upper()
-    #print(random_word)
     return random_word
 
+# Returns True if the provided word is in the valid word list and False otherwise
 def is_valid_word(word):
     infile_name = "user_word_list.txt"
     words = open(infile_name).read().split('\n')
@@ -34,14 +42,11 @@ def is_valid_word(word):
     else:
         return False
 
+# Starts and runs the Wordle game
 def start_wordle():
     init()
-    right_letter = Fore.GREEN + Style.NORMAL
-    wrong_place = Fore.YELLOW + Style.NORMAL
-    wrong_letter = Fore.BLACK + Style.BRIGHT
 
     running = True
-
     while(running):
         print("Starting a new game of Wordle!")
         solution = get_random_word("word_list.txt")
@@ -50,12 +55,18 @@ def start_wordle():
 
         # Player gets 6 guesses
         for i in range(0,6):
+            # Stores the player's results for this guess
             results = [wrong_letter] * 5
+            # Stores the player's results as emojis for the final scoreboard
             final_results = ["\U00002B1B"] * 5
             guess = ""
+
+            # Retrieve a valid guess from the player
             while len(guess) != 5:
                 guess = input("Please enter your guess: ")
-                if guess == "quit":
+                guess = guess.upper()
+                # Allow the player to quit at any time
+                if guess == "QUIT":
                     print("Shutting down...")
                     running = False
                     return
@@ -64,7 +75,6 @@ def start_wordle():
                 elif not is_valid_word(guess):
                     guess = ""
                     print("Guess not in word list")
-                guess = guess.upper()
 
             index = 0
             letters_found = {}
