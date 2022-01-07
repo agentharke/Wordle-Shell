@@ -1,11 +1,11 @@
-from colorama import init, Fore, Style
+from colorama import init, Fore, Back, Style
 import random
 
 
 # formatting macros for command line output
-right_letter = Fore.GREEN + Style.NORMAL
-wrong_place = Fore.YELLOW + Style.NORMAL
-wrong_letter = Fore.BLACK + Style.BRIGHT
+right_letter = Fore.BLACK + Back.GREEN + Style.NORMAL
+wrong_place = Fore.BLACK + Back.YELLOW + Style.NORMAL
+wrong_letter = Fore.WHITE + Back.BLACK + Style.BRIGHT
 
 # Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
@@ -64,7 +64,8 @@ def start_wordle():
 
             # Retrieve a valid guess from the player
             while len(guess) != 5:
-                guess = input("Please enter your guess: ")
+                print("Please enter your guess: ", end = "")
+                guess = input()
                 guess = guess.upper()
                 # Allow the player to quit at any time
                 if guess == "QUIT":
@@ -121,13 +122,13 @@ def start_wordle():
             if len(results) == 5:
                 print(results[0] + guess[0] + results[1] + guess[1] +
                     results[2] + guess[2] + results[3] + guess[3] +
-                    results[4] + guess[4])
+                    results[4] + guess[4] + Style.RESET_ALL)
             else:
                 print("Something went wrong, try again")
 
             # Add the answer to the final scoreboard
             answers.append(final_results)
-            print(Style.RESET_ALL, end = '')
+            print(Back.RESET + Style.RESET_ALL, end = '')
 
             # Win condition
             if guess == solution:
