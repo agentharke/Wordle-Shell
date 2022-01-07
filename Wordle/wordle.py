@@ -32,11 +32,12 @@ def reset_game():
 def get_random_word(infile):
     random_word = random.choice(open(infile).read().split('\n'))
     random_word = random_word.upper()
+    print(random_word)
     return random_word
 
 # Returns True if the provided word is in the valid word list and False otherwise
 def is_valid_word(word):
-    infile_name = "user_word_list.txt"
+    infile_name = "Wordle/user_word_list.txt"
     words = open(infile_name).read().split('\n')
     if word in words:
         return True
@@ -50,7 +51,7 @@ def start_wordle():
     running = True
     while(running):
         print("Starting a new game of Wordle!")
-        solution = get_random_word("word_list.txt")
+        solution = get_random_word("Wordle/word_list.txt")
         answers = []
         guess = ""
 
