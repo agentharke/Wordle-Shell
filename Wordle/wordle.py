@@ -32,7 +32,6 @@ def reset_game():
 def get_random_word(infile):
     random_word = random.choice(open(infile).read().split('\n'))
     random_word = random_word.upper()
-    print(random_word)
     return random_word
 
 # Returns True if the provided word is in the valid word list and False otherwise
