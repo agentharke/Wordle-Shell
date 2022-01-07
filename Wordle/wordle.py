@@ -7,6 +7,7 @@ right_letter = Fore.GREEN + Style.NORMAL
 wrong_place = Fore.YELLOW + Style.NORMAL
 wrong_letter = Fore.BLACK + Style.BRIGHT
 
+# Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
     for row in my_list:
         print(row[0] + row[1] + row[2] + row[3] + row[4])
@@ -70,18 +71,23 @@ def start_wordle():
                     print("Shutting down...")
                     running = False
                     return
+                # Ensure the guess is the right length
                 elif len(guess) != 5:
-                    print("That guess is incomplete, please try again")
+                    print("That guess is the wrong length, please try again")
+                # Make sure the guess is a word
                 elif not is_valid_word(guess):
                     guess = ""
                     print("Guess not in word list")
 
             index = 0
             letters_found = {}
-            # right letter right place
+
+            # check for right letter right place
             for letter in guess:
                 if letter in solution:
                     if solution[index] == guess[index]:
+                        # Store how many letters we've successfully guessed
+                        # to avoid incorrect highlighting later
                         if letter in letters_found:
                             letters_found[letter] += 1
                         else:
@@ -92,28 +98,38 @@ def start_wordle():
 
             index = 0
 
-            # right letter wrong place
+            # check for right letter wrong place
             for letter in guess:
                 if letter in solution:
                     if solution[index] != guess[index]:
+                        # Store how many yellow letters we've guessed to
+                        # avoid incorrect highlighting later
                         if letter in letters_found:
                             letters_found[letter] += 1
                         else:
                             letters_found[letter] = 1
                     guess_count = guess.count(letter)
                     solution_count = solution.count(letter)
+                    # Mark letters as yellow, but only if the number of yellow
+                    # letters matches the number of letters in the solution
                     if solution[index] != guess[index] and letters_found[letter] <= solution_count:
                         results[index] = wrong_place
                         final_results[index] = "\N{large yellow square}"
                 index += 1
 
+            # Echo the guess with proper colors
             if len(results) == 5:
-                print(results[0] + guess[0] + results[1] + guess[1] + results[2] + guess[2] + results[3] + guess[3] + results[4] + guess[4])
+                print(results[0] + guess[0] + results[1] + guess[1] +
+                    results[2] + guess[2] + results[3] + guess[3] +
+                    results[4] + guess[4])
             else:
                 print("Something went wrong, try again")
 
+            # Add the answer to the final scoreboard
             answers.append(final_results)
             print(Style.RESET_ALL, end = '')
+
+            # Win condition
             if guess == solution:
                 print(Style.RESET_ALL + "Well done! You win!")
                 print_list(answers)
@@ -122,6 +138,7 @@ def start_wordle():
                     return
                 else:
                     break
+        # Lose condition
         if guess != solution:
             print("You lost, sorry! The correct answer was " + right_letter + solution + Style.RESET_ALL)
             if not reset_game():
