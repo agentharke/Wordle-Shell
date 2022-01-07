@@ -3,7 +3,7 @@
 
  This game requires both Python 3.0 and the `Colorama` pacakage. 
  
- Installation instructions for Python 3 can be found [here](https://realpython.com/installing-python/)
+ Installation instructions for Python 3 can be found [here](https://www.python.org/downloads/)
  
  To install colorama, run the following command:
  ```
