@@ -1,5 +1,6 @@
 from colorama import init, Fore, Back, Style
 import random
+import sys
 
 
 # formatting macros for command line output
@@ -12,10 +13,38 @@ green_square = "\U0001F7E9"
 yellow_square = "\U0001F7E8"
 black_square = "\U00002B1B"
 
+# Number of letters per word
+num_letters = 5
+
+# Number of guesses per game
+num_guesses = 6
+
+# Welcome message to the player
+welcome_message = ("""
+Welcome to Wordle! I've chosen a secret word. Your job is to guess this word in six guesses or less.
+
+If your guess contains a correct letter in the correct position it will be highlighted in """ + right_letter +
+"""green""" + Style.RESET_ALL +
+
+""".
+
+If your guess contains a correct letter in the wrong position it will be highlighted in """ + wrong_place + """yellow""" + Style.RESET_ALL +
+""".
+
+Any letters that are incorrect will be highlighted in """ +
+wrong_letter + """black""" + Style.RESET_ALL +
+
+""".
+
+Good luck!
+""")
+
 # Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
     for row in my_list:
-        print(row[0] + row[1] + row[2] + row[3] + row[4])
+        for index in range(num_letters):
+            print(row[index],end="")
+        print()
 
 # Prompts the user to reset the game, returns True if yes and False otherwise
 def reset_game():
@@ -52,23 +81,27 @@ def is_valid_word(word):
 def start_wordle():
     init()
 
+    print(welcome_message)
+
     running = True
     while(running):
-        print("Starting a new game of Wordle!")
-        solution = get_random_word("Wordle/word_list.txt")
+        if len(sys.argv) > 1:
+            solution = sys.argv[1]
+        else:
+            solution = get_random_word("Wordle/word_list.txt")
         answers = []
         guess = ""
 
         # Player gets 6 guesses
-        for i in range(0,6):
+        for i in range(num_guesses):
             # Stores the player's results for this guess
-            results = [wrong_letter] * 5
+            results = [wrong_letter] * num_letters
             # Stores the player's results as emojis for the final scoreboard
-            final_results = [black_square] * 5
+            final_results = [black_square] * num_letters
             guess = ""
 
             # Retrieve a valid guess from the player
-            while len(guess) != 5:
+            while len(guess) != num_letters:
                 print("Please enter your guess: ", end = "")
                 guess = input()
                 guess = guess.upper()
@@ -78,7 +111,7 @@ def start_wordle():
                     running = False
                     return
                 # Ensure the guess is the right length
-                elif len(guess) != 5:
+                elif len(guess) != num_letters:
                     print("That guess is the wrong length, please try again")
                 # Make sure the guess is a word
                 elif not is_valid_word(guess):
@@ -121,10 +154,10 @@ def start_wordle():
                 index += 1
 
             # Echo the guess with proper colors
-            if len(results) == 5:
-                print(results[0] + guess[0] + results[1] + guess[1] +
-                    results[2] + guess[2] + results[3] + guess[3] +
-                    results[4] + guess[4] + Style.RESET_ALL)
+            if len(results) == num_letters:
+                for index in range(num_letters):
+                    print(results[index] + guess[index], end="")
+                print(Style.RESET_ALL)
             else:
                 print("Something went wrong, try again")
 
