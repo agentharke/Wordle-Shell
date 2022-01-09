@@ -1,7 +1,8 @@
 from colorama import init, Fore, Back, Style
 import random
 import sys
-
+import getopt
+from get_words import get_valid_words, get_solution_words
 
 # formatting macros for command line output
 right_letter = Fore.BLACK + Back.GREEN + Style.NORMAL
@@ -20,8 +21,9 @@ num_letters = 5
 num_guesses = 6
 
 # Welcome message to the player
-welcome_message = ("""
-Welcome to Wordle! I've chosen a secret word. Your job is to guess this word in six guesses or less.
+def welcome(letters, guesses):
+    welcome_message = ("""
+Welcome to Wordle! I've chosen a secret """ + str(letters) + """-letter word. Your job is to guess the word in """ + str(guesses) + """ guesses or less.
 
 If your guess contains a correct letter in the correct position it will be highlighted in """ + right_letter +
 """green""" + Style.RESET_ALL +
@@ -39,8 +41,15 @@ wrong_letter + """black""" + Style.RESET_ALL +
 Good luck!
 """)
 
+    print(welcome_message)
+
+# prints correct usage of program
+def usage():
+    print("usage: wordle.py -g <guesses> -l <length> -s <solution>")
+
 # Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
+    print(num_letters)
     for row in my_list:
         for index in range(num_letters):
             print(row[index],end="")
@@ -77,16 +86,12 @@ def is_valid_word(word):
     else:
         return False
 
-# Starts and runs the Wordle game
-def start_wordle():
-    init()
-
-    print(welcome_message)
-
+def run_wordle(num_guesses=6, num_letters=5, forced_solution=""):
     running = True
+    solution = ""
     while(running):
-        if len(sys.argv) > 1:
-            solution = sys.argv[1]
+        if forced_solution:
+            solution = forced_solution.upper()
         else:
             solution = get_random_word("Wordle/word_list.txt")
         answers = []
@@ -106,7 +111,7 @@ def start_wordle():
                 guess = input()
                 guess = guess.upper()
                 # Allow the player to quit at any time
-                if guess == "QUIT":
+                if guess == "-QUIT":
                     print("Shutting down...")
                     running = False
                     return
@@ -182,6 +187,49 @@ def start_wordle():
                 running = False
                 return
     return
+
+# Starts and runs the Wordle game
+def start_wordle():
+    init()
+
+    global num_guesses
+    global num_letters
+    solution = ""
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hg:l:s:",["help","guesses=",
+                                "length=", "solution="])
+    except getopt.GetoptError as err:
+        print(err)
+        usage()
+        sys.exit()
+
+    for opt, arg in opts:
+        if opt == '-h':
+            usage()
+        elif opt in ('-g', '--guesses'):
+            if not arg.isnumeric() or int(arg) < 1:
+                print("error: number of guesses must be a positive integer")
+                sys.exit()
+            num_guesses = int(arg)
+        elif opt in ('-l', '--length'):
+            if not arg.isnumeric() or int(arg) < 1:
+                print("error: length of guesses must be a positive integer")
+                sys.exit()
+            num_letters = int(arg)
+        elif opt in ('-s', '--solution'):
+            if not arg.isalpha():
+                print("error: custom forced solutions must be strings of letters")
+                sys.exit()
+            solution = arg
+
+    get_valid_words(num_letters)
+    get_solution_words(num_letters)
+
+    welcome(num_letters, num_guesses)
+    run_wordle(num_guesses,num_letters,solution)
+
+    sys.exit()
 
 if __name__ == '__main__':
     start_wordle()
