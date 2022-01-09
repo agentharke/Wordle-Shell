@@ -7,6 +7,11 @@ right_letter = Fore.BLACK + Back.GREEN + Style.NORMAL
 wrong_place = Fore.BLACK + Back.YELLOW + Style.NORMAL
 wrong_letter = Fore.WHITE + Back.BLACK + Style.BRIGHT
 
+# emoji macros
+green_square = "\U0001F7E9"
+yellow_square = "\U0001F7E8"
+black_square = "\U00002B1B"
+
 # Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
     for row in my_list:
@@ -59,7 +64,7 @@ def start_wordle():
             # Stores the player's results for this guess
             results = [wrong_letter] * 5
             # Stores the player's results as emojis for the final scoreboard
-            final_results = ["\U00002B1B"] * 5
+            final_results = [black_square] * 5
             guess = ""
 
             # Retrieve a valid guess from the player
@@ -94,7 +99,7 @@ def start_wordle():
                         else:
                             letters_found[letter] = 1
                         results[index] = right_letter
-                        final_results[index] = "\N{large green square}"
+                        final_results[index] = green_square
                 index += 1
 
             index = 0
@@ -115,7 +120,7 @@ def start_wordle():
                     # letters matches the number of letters in the solution
                     if solution[index] != guess[index] and letters_found[letter] <= solution_count:
                         results[index] = wrong_place
-                        final_results[index] = "\N{large yellow square}"
+                        final_results[index] = yellow_square
                 index += 1
 
             # Echo the guess with proper colors
@@ -142,6 +147,7 @@ def start_wordle():
         # Lose condition
         if guess != solution:
             print("You lost, sorry! The correct answer was " + right_letter + solution + Style.RESET_ALL)
+            print_list(answers)
             if not reset_game():
                 running = False
                 return
