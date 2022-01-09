@@ -85,11 +85,10 @@ def start_wordle():
                     guess = ""
                     print("Guess not in word list")
 
-            index = 0
             letters_found = {}
 
             # check for right letter right place
-            for letter in guess:
+            for index, letter in enumerate(guess):
                 if letter in solution:
                     if solution[index] == guess[index]:
                         # Store how many letters we've successfully guessed
@@ -102,10 +101,8 @@ def start_wordle():
                         final_results[index] = green_square
                 index += 1
 
-            index = 0
-
             # check for right letter wrong place
-            for letter in guess:
+            for index, letter in enumerate(guess):
                 if letter in solution:
                     if solution[index] != guess[index]:
                         # Store how many yellow letters we've guessed to
