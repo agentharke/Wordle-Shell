@@ -1,7 +1,5 @@
 from colorama import init, Fore, Back, Style
-import random
-import sys
-import getopt
+import random, sys, getopt, unicodedata
 from get_words import get_valid_words, get_solution_words
 
 # formatting macros for command line output
@@ -10,9 +8,9 @@ wrong_place = Fore.BLACK + Back.YELLOW + Style.NORMAL
 wrong_letter = Fore.WHITE + Back.BLACK + Style.BRIGHT
 
 # emoji macros
-green_square = "\U0001F7E9"
-yellow_square = "\U0001F7E8"
-black_square = "\U00002B1B"
+green_square = unicodedata.lookup("large green square") #"\U0001F7E9"
+yellow_square = unicodedata.lookup("large yellow square") #"\U0001F7E8"
+black_square = unicodedata.lookup("black large square") #"\U00002B1B"
 
 # Number of letters per word
 num_letters = 5
@@ -38,6 +36,8 @@ wrong_letter + """black""" + Style.RESET_ALL +
 
 """.
 
+For additional options run this program with "-h". To quit at any time guess "-quit".
+
 Good luck!
 """)
 
@@ -49,7 +49,6 @@ def usage():
 
 # Prints each row of the scoreboard with proper formatting
 def print_list(my_list):
-    print(num_letters)
     for row in my_list:
         for index in range(num_letters):
             print(row[index],end="")
